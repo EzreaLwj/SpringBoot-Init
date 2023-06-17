@@ -1,10 +1,10 @@
-package com.ezreal.autobi.service.impl;
+package com.ezreal.autobi.domain.chart.impl;
 
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ezreal.autobi.mapper.ChartMapper;
-import com.ezreal.autobi.model.entity.Chart;
-import com.ezreal.autobi.service.ChartService;
+import com.ezreal.autobi.domain.chart.model.entity.Chart;
+import com.ezreal.autobi.domain.chart.ChartService;
 import org.springframework.stereotype.Service;
 
 /**

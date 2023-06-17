@@ -1,6 +1,6 @@
 package com.ezreal.autobi.mapper;
 
-import com.ezreal.autobi.model.entity.Chart;
+import com.ezreal.autobi.domain.chart.model.entity.Chart;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

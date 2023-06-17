@@ -1,4 +1,4 @@
-package com.ezreal.autobi.model.entity;
+package com.ezreal.autobi.domain.chart.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -9,12 +9,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 用户表
- * @TableName user
+ * 图表表
+ * @TableName chart
  */
-@TableName(value ="user")
+@TableName(value ="chart")
 @Data
-public class User implements Serializable {
+public class Chart implements Serializable {
     /**
      * id
      */
@@ -22,29 +22,34 @@ public class User implements Serializable {
     private Long id;
 
     /**
-     * 账号
+     * 分析目标
      */
-    private String userAccount;
+    private String goal;
 
     /**
-     * 密码
+     * 图表数据
      */
-    private String userPassword;
+    private String charData;
 
     /**
-     * 用户名称
+     * 图表类型
      */
-    private String userName;
+    private String charType;
 
     /**
-     * 用户头像
+     * 生成的图表数据
      */
-    private String userAvatar;
+    private String genChart;
 
     /**
-     * 用户角色 admin/user
+     * 生成图表结果
      */
-    private String userRole;
+    private String genResult;
+
+    /**
+     * 用户id
+     */
+    private Long userId;
 
     /**
      * 创建时间

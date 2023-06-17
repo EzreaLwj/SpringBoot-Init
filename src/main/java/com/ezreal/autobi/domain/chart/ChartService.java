@@ -1,7 +1,7 @@
-package com.ezreal.autobi.service;
+package com.ezreal.autobi.domain.chart;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ezreal.autobi.model.entity.Chart;
+import com.ezreal.autobi.domain.chart.model.entity.Chart;
 
 /**
 * @author Ezreal

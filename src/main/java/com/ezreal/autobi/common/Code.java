@@ -33,4 +33,27 @@ public enum Code {
         public final static int HASH_ITERATIONS = 3;
         public final static String MD5_ALGORITHM = "md5";
     }
+
+    public enum UserCode {
+        USER_REGISTER_SUCCESS(201, "register success"),
+        USER_LOGIN_SUCCESS(200, "login success"),
+        USER_LOGIN_FAIL(500, "login fail"),
+        USER_REGISTER_FAIL(501, "register fail");
+
+        private final int code;
+        private final String message;
+
+        UserCode(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
 }

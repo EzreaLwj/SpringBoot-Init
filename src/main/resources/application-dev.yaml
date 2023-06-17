@@ -1,7 +1,13 @@
 spring:
   datasource:
-    druid:
-      name: root
-      password: ezreal
-      driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/autobi?characterEncoding=utf-8&serverTimezone=Hongkong&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/autobi?characterEncoding=utf-8&serverTimezone=Hongkong&useSSL=false
+    username: root
+    password: ezreal
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    database: 2
+    port: 6379
+    host: localhost
+    password: ezreal
+    timeout: 5000

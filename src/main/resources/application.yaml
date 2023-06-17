@@ -1,7 +1,6 @@
 server:
   port: 8080
-  servlet:
-    context-path: /api
+
 spring:
   profiles:
     active: dev
@@ -13,6 +12,10 @@ spring:
   jackson:
     generator:
       write_numbers_as_strings: true
+  session:
+    store-type: redis
+    # 30天过期
+    timeout: 2592000
 shiro:
   web:
     enabled: false
