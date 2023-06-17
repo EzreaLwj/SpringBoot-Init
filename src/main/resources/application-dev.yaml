@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    druid:
+      name: root
+      password: ezreal
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/autobi?characterEncoding=utf-8&serverTimezone=Hongkong&useSSL=false

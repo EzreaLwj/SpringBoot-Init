@@ -1,16 +1,21 @@
 server:
   port: 8080
-
+  servlet:
+    context-path: /api
 spring:
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
   application:
     name: AutoBi
-  datasource:
-    druid:
-      name: root
-      password: 123456
-      driver-class-name: com.mysql.jdbc.Drvier
-      url: jdbc:mysql://localhost:3306/test?characterEncoding=utf-8&serverTimezone=Hongkong&useSSL=false
-
+  jackson:
+    generator:
+      write_numbers_as_strings: true
+shiro:
+  web:
+    enabled: false
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
