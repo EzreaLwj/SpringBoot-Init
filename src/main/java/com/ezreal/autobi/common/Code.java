@@ -34,11 +34,39 @@ public enum Code {
         public final static String MD5_ALGORITHM = "md5";
     }
 
+    public static class Jwt {
+        public final static long TIME = 1000 * 60 * 60 * 24 * 30L;
+//        public final static long TIME = 1000 * 30L;
+    }
+
+    public enum JwtCode {
+       JWT_DECODE_ERROR(501, "jwt decode error");
+
+        private final int code;
+        private final String message;
+
+        JwtCode(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
+
     public enum UserCode {
         USER_REGISTER_SUCCESS(201, "register success"),
         USER_LOGIN_SUCCESS(200, "login success"),
         USER_LOGIN_FAIL(500, "login fail"),
-        USER_REGISTER_FAIL(501, "register fail");
+        USER_REGISTER_FAIL(501, "register fail"),
+        USER_NOT_LOGIN(502, "not login"),
+        USER_OUT_LOGIN(202, "out login"),
+        USER_OUT_LOGIN_FAIL(503, "out login fail");
 
         private final int code;
         private final String message;

@@ -1,20 +1,21 @@
 package com.ezreal.autobi.config;
 
 import com.ezreal.autobi.common.Code;
+import com.ezreal.autobi.domain.user.filter.JwtFilter;
 import com.ezreal.autobi.domain.user.realm.LoginRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
-import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.SubjectContext;
 import org.apache.shiro.web.filter.authc.AnonymousFilter;
+import org.apache.shiro.web.filter.authc.LogoutFilter;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.DefaultWebSubjectFactory;
 import org.apache.shiro.web.servlet.SimpleCookie;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,6 +35,9 @@ public class ShiroConfig {
     @Resource
     private LoginRealm loginRealm;
 
+    @Resource
+    private JwtFilter jwtFilter;
+
     @Bean
     public SubjectFactory subjectFactory() {
         class JwtDefaultSubjectFactory extends DefaultWebSubjectFactory {
@@ -50,18 +54,6 @@ public class ShiroConfig {
     public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
-        // 关闭 ShiroDAO 功能
-        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
-        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
-
-        // 不需要将 Shiro Session 中的东西存到任何地方（包括 Http Session 中）
-        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
-        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
-        securityManager.setSubjectDAO(subjectDAO);
-
-        // 禁止Subject的getSession方法
-        securityManager.setSubjectFactory(subjectFactory());
-
         // 密码使用 MD5 来校验
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
         hashedCredentialsMatcher.setHashAlgorithmName(Code.ShiroCode.MD5_ALGORITHM);
@@ -75,11 +67,8 @@ public class ShiroConfig {
         return securityManager;
     }
 
-
     private CookieRememberMeManager cookieRememberMeManager() {
         CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
-
-
         SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
 
         // 设置 cookie 的根路径
@@ -99,22 +88,28 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean shiroFilterFactoryBean() {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager());
-        shiroFilter.setLoginUrl("/unauthenticated");
-        shiroFilter.setUnauthorizedUrl("/unauthorized");
 
-        // 添加jwt过滤器
         Map<String, Filter> filterMap = new HashMap<>();
 
         // 设置过滤器【anon\logout可以不设置】
         filterMap.put("anon", new AnonymousFilter());
-//        filterMap.put("userLogin", new UserLoginFilter());
+        filterMap.put("logout", new LogoutFilter());
+        filterMap.put("jwt", jwtFilter);
         shiroFilter.setFilters(filterMap);
 
-        // 拦截器，指定方法走哪个拦截器 【login->anon】【logout->logout】【verify->jwt】
+        // 拦截器，指定方法走哪个拦截器
         Map<String, String> filterRuleMap = new LinkedHashMap<>();
-//        filterRuleMap.put("/user/login", "userLogin");
+        filterRuleMap.put("/user/outLogin", "jwt");
         shiroFilter.setFilterChainDefinitionMap(filterRuleMap);
+
         return shiroFilter;
     }
 
+    // 开启对 shiro 注解的支持
+    @Bean
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
+        return defaultAdvisorAutoProxyCreator;
+    }
 }

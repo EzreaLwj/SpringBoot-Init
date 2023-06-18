@@ -24,4 +24,14 @@ public class UserLoginResp {
      * 用户角色
      */
     private String userRole;
+
+    /**
+     * 用户头像
+     */
+    private String userAvatar;
+
+    /**
+     * token
+     */
+    private String token;
 }

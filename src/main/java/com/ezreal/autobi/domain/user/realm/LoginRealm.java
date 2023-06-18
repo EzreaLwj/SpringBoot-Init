@@ -2,12 +2,14 @@ package com.ezreal.autobi.domain.user.realm;
 
 import cn.hutool.core.util.StrUtil;
 import com.ezreal.autobi.common.Code;
+import com.ezreal.autobi.domain.user.model.entity.User;
 import com.ezreal.autobi.mapper.UserMapper;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -22,9 +24,18 @@ public class LoginRealm extends AuthorizingRealm {
     @Resource
     private UserMapper userMapper;
 
+    /**
+     * 鉴权
+     * @param principalCollection
+     * @return
+     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        return null;
+        String principal =  principalCollection.getPrimaryPrincipal().toString();
+        User user = userMapper.selectUserByAccount(principal);
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo ();
+        simpleAuthorizationInfo.addRole(user.getUserRole());
+        return simpleAuthorizationInfo;
     }
 
     @Override
