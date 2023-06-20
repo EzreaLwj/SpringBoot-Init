@@ -11,3 +11,8 @@ spring:
     host: localhost
     password: ezreal
     timeout: 5000
+yuapi:
+  client:
+    access-key: ftpc9kx4akk0df4vhwmspcebk9qthhks
+    secret-key: fh5o7fi958v3rb5t586dgpvtfz684ngy
+    modelId: 1671122813869625345

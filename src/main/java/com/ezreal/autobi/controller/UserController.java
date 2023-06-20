@@ -26,7 +26,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public BaseResponse<UserLoginResp> getUserInfo(@PathVariable Long id, HttpServletRequest servletRequest) {
         if (id == null) {
             log.warn("UserController|userRegister|参数错误, userId: {}", id);

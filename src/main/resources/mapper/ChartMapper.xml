@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.ezreal.autobi.domain.chart.model.entity.Chart">
             <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="goal" column="goal" jdbcType="VARCHAR"/>
             <result property="charData" column="char_data" jdbcType="VARCHAR"/>
             <result property="charType" column="char_type" jdbcType="VARCHAR"/>
@@ -18,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,goal,char_data,
+        id,name,goal,char_data,
         char_type,gen_chart,gen_result,
         user_id,create_time,update_time,
         is_delete

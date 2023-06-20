@@ -2,6 +2,7 @@ package com.ezreal.autobi.mapper;
 
 import com.ezreal.autobi.domain.chart.model.entity.Chart;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author Ezreal
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2023-06-17 12:08:59
 * @Entity com.ezreal.autobi.model/entity.Chart
 */
+@Mapper
 public interface ChartMapper extends BaseMapper<Chart> {
 
 }

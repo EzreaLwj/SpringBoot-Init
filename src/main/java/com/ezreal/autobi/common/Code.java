@@ -39,8 +39,54 @@ public enum Code {
 //        public final static long TIME = 1000 * 30L;
     }
 
+    public enum ChartCode {
+
+        CHART_UPLOAD_SUCCESS(201, "upload success"),
+        CHART_UPLOAD_FAIL(501, "upload fail"),
+        CHART_LENGTH_ERROR(502, "length error");
+
+
+        private final int code;
+        private final String message;
+
+        ChartCode(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
+
+    public enum FileCode {
+        FILE_UPLOAD_SUCCESS(201, "upload success"),
+        FILE_UPLOAD_FAIL(501, "upload fail");
+
+        private final int code;
+        private final String message;
+
+        FileCode(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+    }
+
     public enum JwtCode {
-       JWT_DECODE_ERROR(501, "jwt decode error");
+        JWT_DECODE_ERROR(501, "jwt decode error");
 
         private final int code;
         private final String message;
