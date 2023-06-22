@@ -19,6 +19,6 @@ redisson:
   database: 2
 yuapi:
   client:
-    access-key: ftpc9kx4akk0df4vhwmspcebk9qthhks
-    secret-key: fh5o7fi958v3rb5t586dgpvtfz684ngy
-    modelId: 1671122813869625345
+    access-key: xxx
+    secret-key: xxx
+    modelId: xxx
