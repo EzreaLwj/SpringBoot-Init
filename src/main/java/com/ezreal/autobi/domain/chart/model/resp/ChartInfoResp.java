@@ -28,6 +28,11 @@ public class ChartInfoResp {
     private String goal;
 
     /**
+     * 状态
+     */
+    private String status;
+
+    /**
      * 图表类型
      */
     private String charType;

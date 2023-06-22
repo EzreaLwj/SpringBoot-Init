@@ -6,6 +6,8 @@ import com.ezreal.autobi.common.PageParams;
 import com.ezreal.autobi.common.ResultsUtils;
 import com.ezreal.autobi.domain.chart.AbstractChartService;
 import com.ezreal.autobi.domain.chart.ChartService;
+import com.ezreal.autobi.domain.chart.exception.ChartException;
+import com.ezreal.autobi.domain.chart.model.entity.Chart;
 import com.ezreal.autobi.domain.chart.model.req.ChartInfoReq;
 import com.ezreal.autobi.domain.chart.model.req.ChartReq;
 import com.ezreal.autobi.domain.chart.model.resp.ChartInfoResp;
@@ -20,6 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Ezreal
@@ -33,6 +39,12 @@ public class ChartServiceImpl extends AbstractChartService {
 
     @Resource
     private ChartMapper chartMapper;
+
+    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,
+            4,
+            1,
+            TimeUnit.SECONDS, new ArrayBlockingQueue<>(20),
+            new ThreadPoolExecutor.AbortPolicy());
 
     private final String problemFormat = "分析需求：\n" +
             "%s, 请生成%s \n" +
@@ -67,15 +79,44 @@ public class ChartServiceImpl extends AbstractChartService {
             problem.append(csvResult);
             log.info("ChartServiceImpl|getChartData|生成的prompt: {}", problem);
 
-
-            // 调用 AI 接口
-            String content = callAIInterface(problem);
-            log.info("ChartServiceImpl|getChartData|生成的内容为：{}", content);
-
-            // 处理数据库的结果
+            // 提前处理数据库的结果
             ChartService ChartService = (ChartService) AopContext.currentProxy();
-            ChartResp chartResp = ChartService.saveChartDataToDB(chartReq, content, csvResult);
+            ChartResp chartResp = ChartService.saveChartDataToDB(chartReq, csvResult);
 
+            Long chartId = chartResp.getChartId();
+            // 异步处理
+            CompletableFuture.runAsync(() -> {
+                log.info("ChartServiceImpl|getChartData|图表分析结果生成中, chartId: {}", chartId);
+                // 调用 AI 接口
+                String content = callAIInterface(problem);
+                log.info("ChartServiceImpl|getChartData|生成的内容为：{}", content);
+
+                // 处理结果
+                String[] results = content.split("【【【【【");
+
+                if (results.length < 2) {
+                    updateChartFail(chartId);
+                    log.warn("ChartServiceImpl|getChartData|图表分析结果生成失败, chartId: {}", chartId);
+                    throw new ChartException(Code.ChartCode.CHART_LENGTH_ERROR);
+                }
+                String genChartCode = results[1].trim();
+                String genChartResult = results[2].trim();
+
+                Chart chart = new Chart();
+                chart.setId(chartId);
+                chart.setGenChart(genChartCode);
+                chart.setGenResult(genChartResult);
+                chart.setStatus("succeed");
+                int update = chartMapper.updateById(chart);
+                if (update <= 0) {
+                    updateChartFail(chartId);
+                    log.warn("ChartServiceImpl|getChartData|图表分析结果生成失败, chartId: {}", chartId);
+                    throw new ChartException(Code.ChartCode.CHART_UPLOAD_FAIL);
+                }
+                log.info("ChartServiceImpl|getChartData|图表分析结果生成成功, chartId: {}", chartId);
+            }, threadPoolExecutor);
+
+            log.info("ChartServiceImpl|getChartData|任务提交中, chartId: {}", chartId);
             return ResultsUtils.success(Code.ChartCode.CHART_UPLOAD_SUCCESS.getCode(),
                     Code.ChartCode.CHART_UPLOAD_SUCCESS.getMessage(),
                     chartResp);
@@ -86,6 +127,18 @@ public class ChartServiceImpl extends AbstractChartService {
 
         return ResultsUtils.fail(Code.ChartCode.CHART_UPLOAD_FAIL.getCode(),
                 Code.ChartCode.CHART_UPLOAD_FAIL.getMessage());
+    }
+
+    /**
+     * 错误处理
+     * @param chartId 图表ID
+     */
+    private void updateChartFail(Long chartId) {
+        Chart chart = new Chart();
+        chart.setId(chartId);
+        chart.setStatus("fail");
+
+        chartMapper.updateById(chart);
     }
 }
 

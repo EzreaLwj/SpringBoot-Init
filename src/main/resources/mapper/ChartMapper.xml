@@ -8,6 +8,7 @@
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="goal" column="goal" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
         <result property="charData" column="char_data" jdbcType="VARCHAR"/>
         <result property="charType" column="char_type" jdbcType="VARCHAR"/>
         <result property="genChart" column="gen_chart" jdbcType="VARCHAR"/>
@@ -19,35 +20,37 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,goal,char_data,
+        id,name,goal,char_data,status,
         char_type,gen_chart,gen_result,
         user_id,create_time,update_time,
         is_delete
     </sql>
 
     <select id="selectChartInfoList" resultType="com.ezreal.autobi.domain.chart.model.resp.ChartInfoResp">
-        select id, name, goal, char_type, gen_chart, gen_result
+        select id, name, goal, char_type, gen_chart, gen_result,status
         from chart
         where user_id = #{userId}
         <if test="pageParams.keyword != null">
             and name like concat(#{pageParams.keyword}, '%')
         </if>
+        order by create_time desc
         limit #{pageParams.pageNum},#{pageParams.pageSize}
+
     </select>
 
     <update id="createGenChartTable" parameterType="list" statementType="STATEMENT">
         create table if not exists ${tableName}
         (
-            <foreach collection="columnName" item="name" separator="," index="idx">
-                ${name} varchar(255) not null
-            </foreach>
+        <foreach collection="columnName" item="name" separator="," index="idx">
+            ${name} varchar(255) not null
+        </foreach>
         );
     </update>
 
     <insert id="insertGenChartValue">
         INSERT INTO ${tableName}
         VALUES
-        <foreach collection="genChartValue" item="outerList" separator="," >
+        <foreach collection="genChartValue" item="outerList" separator=",">
             (
             <foreach collection="outerList" item="innerList" separator=",">
                 ${innerList}

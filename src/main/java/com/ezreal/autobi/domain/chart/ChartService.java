@@ -26,11 +26,10 @@ public interface ChartService {
      * 解析整理数据，保存到数据库中
      *
      * @param chartReq  请求
-     * @param content   内容
      * @param csvResult Excel 解析后的数据
      * @return 结果
      */
-    ChartResp saveChartDataToDB(ChartReq chartReq, String content, String csvResult);
+    ChartResp saveChartDataToDB(ChartReq chartReq, String csvResult);
 
     /**
      * 调用 AI 接口

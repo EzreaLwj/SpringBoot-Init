@@ -51,21 +51,9 @@ public abstract class AbstractChartService implements ChartService {
 
     @Transactional
     @Override
-    public ChartResp saveChartDataToDB(ChartReq chartReq, String content, String csvResult) {
-
-        // 处理结果
-        String[] results = content.split("【【【【【");
-
-        if (results.length < 2) {
-            throw new ChartException(Code.ChartCode.CHART_LENGTH_ERROR);
-        }
+    public ChartResp saveChartDataToDB(ChartReq chartReq, String csvResult) {
 
         ChartResp chartResp = new ChartResp();
-        String genChartCode = results[1].trim();
-        String genChartResult = results[2].trim();
-        chartResp.setGenChart(genChartCode);
-        chartResp.setGenResult(genChartResult);
-
 
         // 保存图表实体到数据库
         Chart chart = new Chart();
@@ -73,12 +61,11 @@ public abstract class AbstractChartService implements ChartService {
         chart.setGoal(chartReq.getGoal());
         chart.setUserId(chartReq.getUserId());
         chart.setCharType(chartReq.getChartType());
-        chart.setGenChart(genChartCode);
-        chart.setGenResult(genChartResult);
         chart.setUserId(chart.getUserId());
         chartMapper.insert(chart);
 
-
+        chartResp.setChartId(chart.getId());
+        chartResp.setStatus(chart.getStatus());
         // 保存图表数据到 新建的表中
         TableList tableList = new TableList();
 

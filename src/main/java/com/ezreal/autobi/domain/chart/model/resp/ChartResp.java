@@ -19,4 +19,9 @@ public class ChartResp {
      * 生成图表结果
      */
     private String genResult;
+
+    /**
+     * 生成的状态
+     */
+    private String status;
 }

@@ -1,6 +1,5 @@
 package com.ezreal.autobi.controller;
 
-import com.alibaba.druid.sql.visitor.functions.Char;
 import com.ezreal.autobi.common.BaseResponse;
 import com.ezreal.autobi.common.Code;
 import com.ezreal.autobi.common.ResultsUtils;
