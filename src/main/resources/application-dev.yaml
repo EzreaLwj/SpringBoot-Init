@@ -11,6 +11,12 @@ spring:
     host: localhost
     password: ezreal
     timeout: 5000
+
+redisson:
+  host: localhost
+  port: 6379
+  password: ezreal
+  database: 2
 yuapi:
   client:
     access-key: ftpc9kx4akk0df4vhwmspcebk9qthhks

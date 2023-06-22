@@ -7,6 +7,7 @@ public enum Code {
     NO_AUTH_ERROR(40101, "无权限"),
     NOT_FOUND_ERROR(40400, "请求数据不存在"),
     FORBIDDEN_ERROR(40300, "禁止访问"),
+    TO_MANY_ERROR(40297, "访问频繁"),
     SYSTEM_ERROR(50000, "系统内部异常"),
     SYSTEM_BUSY(50002, "系统繁忙"),
     OPERATION_ERROR(50001, "操作失败");
@@ -42,6 +43,7 @@ public enum Code {
     public enum ChartCode {
 
         CHART_UPLOAD_SUCCESS(201, "upload success"),
+        CHART_SELECT_SUCCESS(202, "select success"),
         CHART_UPLOAD_FAIL(501, "upload fail"),
         CHART_LENGTH_ERROR(502, "length error");
 

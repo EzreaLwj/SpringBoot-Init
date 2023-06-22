@@ -5,17 +5,17 @@
 <mapper namespace="com.ezreal.autobi.mapper.ChartMapper">
 
     <resultMap id="BaseResultMap" type="com.ezreal.autobi.domain.chart.model.entity.Chart">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="goal" column="goal" jdbcType="VARCHAR"/>
-            <result property="charData" column="char_data" jdbcType="VARCHAR"/>
-            <result property="charType" column="char_type" jdbcType="VARCHAR"/>
-            <result property="genChart" column="gen_chart" jdbcType="VARCHAR"/>
-            <result property="genResult" column="gen_result" jdbcType="VARCHAR"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="goal" column="goal" jdbcType="VARCHAR"/>
+        <result property="charData" column="char_data" jdbcType="VARCHAR"/>
+        <result property="charType" column="char_type" jdbcType="VARCHAR"/>
+        <result property="genChart" column="gen_chart" jdbcType="VARCHAR"/>
+        <result property="genResult" column="gen_result" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -24,4 +24,35 @@
         user_id,create_time,update_time,
         is_delete
     </sql>
+
+    <select id="selectChartInfoList" resultType="com.ezreal.autobi.domain.chart.model.resp.ChartInfoResp">
+        select id, name, goal, char_type, gen_chart, gen_result
+        from chart
+        where user_id = #{userId}
+        <if test="pageParams.keyword != null">
+            and name like concat(#{pageParams.keyword}, '%')
+        </if>
+        limit #{pageParams.pageNum},#{pageParams.pageSize}
+    </select>
+
+    <update id="createGenChartTable" parameterType="list" statementType="STATEMENT">
+        create table if not exists ${tableName}
+        (
+            <foreach collection="columnName" item="name" separator="," index="idx">
+                ${name} varchar(255) not null
+            </foreach>
+        );
+    </update>
+
+    <insert id="insertGenChartValue">
+        INSERT INTO ${tableName}
+        VALUES
+        <foreach collection="genChartValue" item="outerList" separator="," >
+            (
+            <foreach collection="outerList" item="innerList" separator=",">
+                ${innerList}
+            </foreach>
+            )
+        </foreach>
+    </insert>
 </mapper>

@@ -6,6 +6,7 @@ import com.ezreal.autobi.common.ResultsUtils;
 import com.ezreal.autobi.domain.chart.exception.ChartException;
 import com.ezreal.autobi.domain.chart.model.resp.ChartResp;
 import com.ezreal.autobi.domain.security.model.AuthorizationExceptionResp;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,5 +41,12 @@ public class GlobalExceptionHandler {
     public BaseResponse<ChartResp> chartRespBaseResponse(ChartException chartException) {
         log.warn("GlobalExceptionHandler|authorizationException message: {}", chartException.getMessage());
         return ResultsUtils.fail(chartException.getCode(), chartException.getMessage());
+    }
+
+    @ExceptionHandler(ToManyRequestException.class)
+    public BaseResponse<String> toManyRequestException(ToManyRequestException toManyRequestException) {
+        log.warn("GlobalExceptionHandler|authorizationException message: {}", toManyRequestException.getMessage());
+        return ResultsUtils.fail(Code.TO_MANY_ERROR.getCode(),
+                Code.TO_MANY_ERROR.getMessage(), toManyRequestException.getMessage());
     }
 }

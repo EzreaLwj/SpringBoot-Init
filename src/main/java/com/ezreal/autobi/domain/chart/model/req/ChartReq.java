@@ -24,6 +24,6 @@ public class ChartReq {
     /**
      * 图表类型
      */
-    private String charType;
+    private String chartType;
 
 }
